@@ -4,7 +4,19 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        {/* Removed OpenDyslexic font link, use system fonts instead */}
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+          rel="stylesheet"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
       </Head>
       <body>
         <Main />

@@ -2,13 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
 body {
-  font-family: 'Inter', 'Open Sans', Arial, sans-serif;
   background: #f8fafc;
   color: #22223b;
   transition: background 0.3s, color 0.3s;
 }
 
 .dyslexia-font {
-  font-family: 'OpenDyslexic', 'Arial', sans-serif !important;
+  font-family: system-ui, sans-serif !important;
 }
