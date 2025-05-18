@@ -20,7 +20,7 @@ function CategoryDetails() {
 
   const fetchCategory = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/categories/${id}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/categories/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -46,7 +46,7 @@ function CategoryDetails() {
 
   const handleStatusChange = async (newStatus) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/categories/${id}/${newStatus}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/categories/${id}/${newStatus}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -71,7 +71,7 @@ function CategoryDetails() {
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/categories/${id}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/categories/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -233,8 +233,8 @@ function CategoryDetails() {
                   <button
                     onClick={() => handleStatusChange(category.status === 'active' ? 'deactivate' : 'activate')}
                     className={`inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${category.status === 'active'
-                        ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
-                        : 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                      ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
+                      : 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
                       } focus:outline-none focus:ring-2 focus:ring-offset-2`}
                   >
                     {category.status === 'active' ? 'Deactivate' : 'Activate'} Category

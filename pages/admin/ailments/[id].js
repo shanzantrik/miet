@@ -54,7 +54,7 @@ function AilmentForm() {
 
   const fetchAilment = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/ailments/${id}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/ailments/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -87,7 +87,7 @@ function AilmentForm() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/admin/categories', {
+      const response = await fetch('http://localhost:5001/api/admin/categories', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -120,7 +120,7 @@ function AilmentForm() {
       });
 
       const response = await fetch(
-        `http://localhost:5000/api/admin/ailments${isEdit ? `/${id}` : ''}`,
+        `http://localhost:5001/api/admin/ailments${isEdit ? `/${id}` : ''}`,
         {
           method: isEdit ? 'PUT' : 'POST',
           headers: {

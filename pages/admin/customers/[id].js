@@ -56,7 +56,7 @@ function CustomerForm() {
 
   const fetchCustomer = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/customers/${id}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/customers/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -99,7 +99,7 @@ function CustomerForm() {
       });
 
       const response = await fetch(
-        `http://localhost:5000/api/admin/customers${isEdit ? `/${id}` : ''}`,
+        `http://localhost:5001/api/admin/customers${isEdit ? `/${id}` : ''}`,
         {
           method: isEdit ? 'PUT' : 'POST',
           headers: {

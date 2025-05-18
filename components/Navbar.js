@@ -1,4 +1,8 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { useCart } from '../contexts/CartContext';
+import { useAuth } from '../contexts/AuthContext';
 import SearchBar from './SearchBar';
 import LoginForm from './LoginForm';
 import SignupForm from './SignupForm';
@@ -65,12 +69,17 @@ const productsMegaMenu = [
 ];
 
 export default function Navbar() {
+  const router = useRouter();
+  const { cart } = useCart();
+  const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [dropdown, setDropdown] = useState(false);
   const [megaMenu, setMegaMenu] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [signupOpen, setSignupOpen] = useState(false);
+
+  const cartItemsCount = cart?.items?.length || 0;
 
   // Custom modal for search
   const SearchModal = ({ open, onClose }) => {
@@ -176,26 +185,56 @@ export default function Navbar() {
                   {/* Modern cart SVG */}
                   <svg className="h-6 w-6 text-pink-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" /><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61l1.38-7.39H6" /></svg>
                   Cart
+                  {cartItemsCount > 0 && (
+                    <span className="ml-1 bg-pink-500 text-white rounded-full px-2 py-0.5 text-xs font-bold">{cartItemsCount}</span>
+                  )}
                 </a>
               </li>
             </ul>
             {/* Login/Signup/Profile - always at end, responsive */}
             <div className="flex flex-col md:flex-row items-center gap-2 md:gap-2 mt-4 md:mt-0 ml-0 md:ml-4">
-              <button
-                onClick={() => setLoginOpen(true)}
-                className="inline-flex items-center px-4 py-2 bg-white border border-blue-600 text-blue-900 font-bold rounded-full shadow hover:bg-blue-50 transition text-sm w-full md:w-auto justify-center"
-              >
-                <svg className="h-5 w-5 mr-1 text-blue-600" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" /><path d="M6 20v-2a4 4 0 0 1 8 0v2" stroke="currentColor" strokeWidth="2" /></svg>
-                Log In
-              </button>
-              <button
-                onClick={() => setSignupOpen(true)}
-                className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-bold rounded-full shadow hover:bg-blue-700 transition text-sm w-full md:w-auto justify-center"
-              >
-                Sign Up
-                <svg className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </button>
-              <a href="/profile" className="inline-flex items-center ml-0 md:ml-2"><svg className="h-8 w-8 rounded-full border-2 border-blue-600" fill="currentColor" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#e0e7ff" /><circle cx="16" cy="13" r="5" fill="#2563eb" /><path d="M8 26c0-4 8-4 8-4s8 0 8 4" fill="#2563eb" /></svg></a>
+              {user ? (
+                <>
+                  <button
+                    onClick={() => router.push('/profile')}
+                    className="inline-flex items-center px-4 py-2 bg-white border border-blue-600 text-blue-900 font-bold rounded-full shadow hover:bg-blue-50 transition text-sm w-full md:w-auto justify-center"
+                  >
+                    <svg className="h-5 w-5 mr-1 text-blue-600" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" /><path d="M6 20v-2a4 4 0 0 1 8 0v2" stroke="currentColor" strokeWidth="2" /></svg>
+                    Profile
+                  </button>
+                  {user.role === 'ADMIN' && (
+                    <button
+                      onClick={() => router.push('/admin')}
+                      className="inline-flex items-center px-4 py-2 bg-yellow-100 text-yellow-800 font-bold rounded-full shadow hover:bg-yellow-200 transition text-sm w-full md:w-auto justify-center ml-2"
+                    >
+                      Admin Panel
+                    </button>
+                  )}
+                  <button
+                    onClick={() => { logout(); router.push('/login'); }}
+                    className="inline-flex items-center px-4 py-2 bg-pink-100 text-pink-700 font-bold rounded-full shadow hover:bg-pink-200 transition text-sm w-full md:w-auto justify-center ml-2"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setLoginOpen(true)}
+                    className="inline-flex items-center px-4 py-2 bg-white border border-blue-600 text-blue-900 font-bold rounded-full shadow hover:bg-blue-50 transition text-sm w-full md:w-auto justify-center"
+                  >
+                    <svg className="h-5 w-5 mr-1 text-blue-600" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" /><path d="M6 20v-2a4 4 0 0 1 8 0v2" stroke="currentColor" strokeWidth="2" /></svg>
+                    Log In
+                  </button>
+                  <button
+                    onClick={() => setSignupOpen(true)}
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-bold rounded-full shadow hover:bg-blue-700 transition text-sm w-full md:w-auto justify-center"
+                  >
+                    Sign Up
+                    <svg className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

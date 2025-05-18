@@ -177,7 +177,7 @@ function CategoriesPage() {
 
   const handleAction = async (action, categoryId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/categories/${categoryId}/${action}`, {
+      const response = await fetch(`${API_URL}/api/admin/categories/${categoryId}/${action}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -198,7 +198,7 @@ function CategoriesPage() {
 
   const handleBulkAction = async (action, selectedIds) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/categories/bulk/${action}`, {
+      const response = await fetch(`${API_URL}/api/admin/categories/bulk/${action}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,

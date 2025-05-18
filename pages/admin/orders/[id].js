@@ -20,7 +20,7 @@ function OrderDetailsPage() {
 
   const fetchOrder = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/orders/${id}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/orders/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -47,7 +47,7 @@ function OrderDetailsPage() {
   const handleStatusChange = async (newStatus) => {
     setSaving(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/orders/${id}/${newStatus}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/orders/${id}/${newStatus}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -71,7 +71,7 @@ function OrderDetailsPage() {
   const handlePaymentStatusChange = async (newStatus) => {
     setSaving(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/orders/${id}/payment/${newStatus}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/orders/${id}/payment/${newStatus}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -177,9 +177,9 @@ function OrderDetailsPage() {
                   <h3 className="text-sm font-medium text-gray-500">Status</h3>
                   <div className="mt-1">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                        order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                          order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                            'bg-yellow-100 text-yellow-800'
+                      order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                        order.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                          'bg-yellow-100 text-yellow-800'
                       }`}>
                       {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                     </span>
@@ -189,8 +189,8 @@ function OrderDetailsPage() {
                   <h3 className="text-sm font-medium text-gray-500">Payment Status</h3>
                   <div className="mt-1">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${order.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' :
-                        order.paymentStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-red-100 text-red-800'
+                      order.paymentStatus === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-red-100 text-red-800'
                       }`}>
                       {order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1)}
                     </span>

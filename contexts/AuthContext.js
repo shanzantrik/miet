@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect, useContext } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -6,6 +6,7 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     checkAuth();
@@ -14,23 +15,17 @@ export function AuthProvider({ children }) {
   const checkAuth = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        setLoading(false);
-        return;
+      if (token) {
+        const response = await axios.get('/api/auth/me', {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUser(response.data);
       }
-
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/me`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (response.data.user) {
-        setUser(response.data.user);
-      }
-    } catch (error) {
-      console.error('Auth check failed:', error);
+    } catch (err) {
       localStorage.removeItem('token');
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -38,21 +33,36 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+      const response = await axios.post('/api/auth/login', {
         email,
-        password
+        password,
       });
-
       const { token, user } = response.data;
       localStorage.setItem('token', token);
       setUser(user);
-      return { success: true };
-    } catch (error) {
-      console.error('Login failed:', error);
-      return {
-        success: false,
-        error: error.response?.data?.message || 'Login failed'
-      };
+      setError(null);
+      return true;
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to login');
+      return false;
+    }
+  };
+
+  const register = async (name, email, password) => {
+    try {
+      const response = await axios.post('/api/auth/register', {
+        name,
+        email,
+        password,
+      });
+      const { token, user } = response.data;
+      localStorage.setItem('token', token);
+      setUser(user);
+      setError(null);
+      return true;
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to register');
+      return false;
     }
   };
 
@@ -61,16 +71,21 @@ export function AuthProvider({ children }) {
     setUser(null);
   };
 
-  return (
-    <AuthContext.Provider value={{ user, loading, login, logout, checkAuth }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  const value = {
+    user,
+    loading,
+    error,
+    login,
+    register,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;

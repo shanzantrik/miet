@@ -22,55 +22,20 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
-    "/admin/ailments": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/admin/ailments.js"
-    ],
-    "/admin/analytics": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/admin/analytics.js"
-    ],
-    "/admin/categories": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/admin/categories.js"
-    ],
     "/admin/consultants": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
       "static/chunks/pages/admin/consultants.js"
     ],
-    "/admin/dashboard": [
+    "/admin/consultants/[id]": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/admin/dashboard.js"
+      "static/chunks/pages/admin/consultants/[id].js"
     ],
-    "/admin/login": [
+    "/consultants": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",
-      "static/chunks/pages/admin/login.js"
-    ],
-    "/admin/products": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/admin/products.js"
-    ],
-    "/admin/settings": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/admin/settings.js"
-    ],
-    "/admin/specializations": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/admin/specializations.js"
-    ],
-    "/admin/users": [
-      "static/chunks/webpack.js",
-      "static/chunks/main.js",
-      "static/chunks/pages/admin/users.js"
+      "static/chunks/pages/consultants.js"
     ]
   },
   "ampFirstPages": []

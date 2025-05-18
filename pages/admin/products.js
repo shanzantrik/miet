@@ -35,8 +35,8 @@ function ProductsPage() {
       label: 'Stock',
       render: (item) => (
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${item.stock > 10 ? 'bg-green-100 text-green-800' :
-            item.stock > 0 ? 'bg-yellow-100 text-yellow-800' :
-              'bg-red-100 text-red-800'
+          item.stock > 0 ? 'bg-yellow-100 text-yellow-800' :
+            'bg-red-100 text-red-800'
           }`}>
           {item.stock > 0 ? `${item.stock} in stock` : 'Out of stock'}
         </span>
@@ -117,7 +117,7 @@ function ProductsPage() {
 
   const handleBulkAction = async (action, selectedIds) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/products/bulk/${action}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/products/bulk/${action}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -140,7 +140,7 @@ function ProductsPage() {
 
   const handleExport = async (format = 'csv') => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/products/export?format=${format}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/products/export?format=${format}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

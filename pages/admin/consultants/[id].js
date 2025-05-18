@@ -80,7 +80,7 @@ function ConsultantForm() {
 
   const fetchConsultant = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/admin/consultants/${id}`, {
+      const response = await fetch(`${API_URL}/api/consultants/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -98,14 +98,14 @@ function ConsultantForm() {
         address: data.user.address,
         categories: data.categories.map(c => c.id),
         ailments: data.ailments.map(a => a.id),
-        description: data.description,
-        experience: data.experience,
-        education: data.education,
-        services: data.services.map(s => ({
+        description: data.bio || '',
+        experience: data.experience || '',
+        education: data.education || '',
+        services: data.services?.map(s => ({
           name: s.name,
           price: s.price,
           duration: s.duration
-        }))
+        })) || [{ name: '', price: '', duration: '' }]
       });
       if (data.image) {
         setImagePreview(data.image);
@@ -146,23 +146,39 @@ function ConsultantForm() {
     setSaving(true);
     try {
       const formData = new FormData();
-      Object.keys(values).forEach(key => {
-        if (key === 'services') {
-          formData.append(key, JSON.stringify(values[key]));
-        } else if (Array.isArray(values[key])) {
-          values[key].forEach(value => formData.append(`${key}[]`, value));
-        } else {
-          formData.append(key, values[key]);
-        }
+
+      // Add user data
+      formData.append('name', values.name);
+      formData.append('email', values.email);
+      formData.append('phone', values.phone);
+      formData.append('address', values.address);
+
+      // Add consultant data
+      formData.append('bio', values.description);
+      formData.append('experience', values.experience);
+      formData.append('education', values.education);
+
+      // Add arrays
+      values.categories.forEach(categoryId => {
+        formData.append('categories[]', categoryId);
       });
+
+      values.ailments.forEach(ailmentId => {
+        formData.append('ailments[]', ailmentId);
+      });
+
+      // Add services as JSON
+      formData.append('services', JSON.stringify(values.services));
+
+      // Add image if exists
       if (image) {
         formData.append('image', image);
       }
 
       const response = await fetch(
-        `${API_URL}/api/admin/consultants${isEdit ? `/${id}` : ''}`,
+        `${API_URL}/api/consultants${isEdit ? `/${id}` : ''}`,
         {
-          method: isEdit ? 'PUT' : 'POST',
+          method: isEdit ? 'PATCH' : 'POST',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           },
@@ -171,14 +187,15 @@ function ConsultantForm() {
       );
 
       if (!response.ok) {
-        throw new Error(`Failed to ${isEdit ? 'update' : 'create'} consultant`);
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to ${isEdit ? 'update' : 'create'} consultant`);
       }
 
       showNotification(`Consultant ${isEdit ? 'updated' : 'created'} successfully`);
       router.push('/admin/consultants');
     } catch (error) {
       console.error(`Error ${isEdit ? 'updating' : 'creating'} consultant:`, error);
-      showNotification(`Failed to ${isEdit ? 'update' : 'create'} consultant`, 'error');
+      showNotification(error.message || `Failed to ${isEdit ? 'update' : 'create'} consultant`, 'error');
     } finally {
       setSaving(false);
     }

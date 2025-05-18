@@ -83,7 +83,7 @@ function OrdersPage() {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/admin/orders', {
+      const response = await fetch('http://localhost:5001/api/admin/orders', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -113,7 +113,7 @@ function OrdersPage() {
 
   const handleAction = async (action, orderId) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/orders/${orderId}/${action}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/orders/${orderId}/${action}`, {
         method: 'PATCH',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -134,7 +134,7 @@ function OrdersPage() {
 
   const handleBulkAction = async (action, selectedIds) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/orders/bulk/${action}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/orders/bulk/${action}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -157,7 +157,7 @@ function OrdersPage() {
 
   const handleExport = async (format = 'csv') => {
     try {
-      const response = await fetch(`http://localhost:5000/api/admin/orders/export?format=${format}`, {
+      const response = await fetch(`http://localhost:5001/api/admin/orders/export?format=${format}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }

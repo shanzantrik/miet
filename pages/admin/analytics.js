@@ -47,7 +47,7 @@ function AnalyticsPage() {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/admin/analytics', {
+      const response = await fetch('http://localhost:5001/api/admin/analytics', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         }
@@ -235,8 +235,8 @@ function AnalyticsPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${order.amount.toFixed(2)}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                            order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                              'bg-red-100 text-red-800'
+                          order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-red-100 text-red-800'
                           }`}>
                           {order.status}
                         </span>

@@ -2,14 +2,8 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/admin/users": "pages/admin/users.js",
-  "/admin/products": "pages/admin/products.js",
-  "/admin/login": "pages/admin/login.js",
+  "/consultants": "pages/consultants.js",
+  "/admin/consultants/[id]": "pages/admin/consultants/[id].js",
   "/admin/dashboard": "pages/admin/dashboard.js",
-  "/admin/consultants": "pages/admin/consultants.js",
-  "/admin/categories": "pages/admin/categories.js",
-  "/admin/ailments": "pages/admin/ailments.js",
-  "/admin/specializations": "pages/admin/specializations.js",
-  "/admin/analytics": "pages/admin/analytics.js",
-  "/admin/settings": "pages/admin/settings.js"
+  "/admin/consultants": "pages/admin/consultants.js"
 }
