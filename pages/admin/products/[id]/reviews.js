@@ -21,8 +21,8 @@ import {
   TextField
 } from '@mui/material';
 import { ArrowBack as ArrowBackIcon, Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
-import AdminLayout from '../../../../components/layouts/AdminLayout';
-import { useAuth } from '../../../../contexts/AuthContext';
+import AdminLayout from '@/components/layouts/AdminLayout';
+import { useAuth } from '@/contexts/AuthContext';
 import axios from 'axios';
 
 const ProductReviews = () => {

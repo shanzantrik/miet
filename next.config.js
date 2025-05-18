@@ -49,6 +49,10 @@ const nextConfig = {
   env: {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
+  // Add path aliases
+  experimental: {
+    appDir: true,
+  },
 }
 
 module.exports = nextConfig
