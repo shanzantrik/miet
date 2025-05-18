@@ -3,7 +3,6 @@
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
   "/consultants": "pages/consultants.js",
-  "/admin/consultants/[id]": "pages/admin/consultants/[id].js",
-  "/admin/dashboard": "pages/admin/dashboard.js",
-  "/admin/consultants": "pages/admin/consultants.js"
+  "/admin/login": "pages/admin/login.js",
+  "/": "pages/index.js"
 }
