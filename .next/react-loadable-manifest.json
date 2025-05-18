@@ -1,0 +1,18 @@
+{
+  "admin/consultants/[id].js -> react-quill": {
+    "id": 71167,
+    "files": [
+      "static/chunks/eabe11fc.269fa875a7445c43.js",
+      "static/chunks/8446-d0c2d9e64c060c9b.js",
+      "static/chunks/1167.a3ec76aae9080093.js"
+    ]
+  },
+  "admin/products/[id].js -> react-quill": {
+    "id": 71167,
+    "files": [
+      "static/chunks/eabe11fc.269fa875a7445c43.js",
+      "static/chunks/8446-d0c2d9e64c060c9b.js",
+      "static/chunks/1167.a3ec76aae9080093.js"
+    ]
+  }
+}
