@@ -2,25 +2,34 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: false,
+  output: 'standalone', // Optimize for Vercel deployment
+  poweredByHeader: false, // Remove X-Powered-By header
   webpack: (config, { dev, isServer }) => {
-    // Configure Terser
+    // Optimize bundle size
     if (!dev) {
-      config.optimization.minimizer = config.optimization.minimizer.map(minimizer => {
-        if (minimizer.constructor.name === 'TerserPlugin') {
-          minimizer.options.terserOptions = {
-            ...minimizer.options.terserOptions,
-            output: {
-              ...minimizer.options.terserOptions?.output,
-              ascii_only: true, // Force ASCII output
-            },
-            compress: {
-              ...minimizer.options.terserOptions?.compress,
-              drop_console: true, // Remove console.logs in production
-            },
-          };
-        }
-        return minimizer;
-      });
+      config.optimization = {
+        ...config.optimization,
+        minimize: true,
+        minimizer: config.optimization.minimizer.map(minimizer => {
+          if (minimizer.constructor.name === 'TerserPlugin') {
+            minimizer.options.terserOptions = {
+              ...minimizer.options.terserOptions,
+              output: {
+                ...minimizer.options.terserOptions?.output,
+                ascii_only: true,
+                comments: false,
+              },
+              compress: {
+                ...minimizer.options.terserOptions?.compress,
+                drop_console: true,
+                drop_debugger: true,
+                pure_funcs: ['console.log', 'console.info', 'console.debug'],
+              },
+            };
+          }
+          return minimizer;
+        }),
+      };
     }
     return config;
   },
@@ -30,6 +39,15 @@ const nextConfig = {
     maxInactiveAge: 25 * 1000,
     // number of pages that should be kept simultaneously without being disposed
     pagesBufferLength: 2,
+  },
+  // Optimize image loading
+  images: {
+    domains: ['localhost'],
+    unoptimized: process.env.NODE_ENV === 'development',
+  },
+  // Handle environment variables
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
 }
 
