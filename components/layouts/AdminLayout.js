@@ -26,7 +26,7 @@ const menuItems = [
   { text: 'Settings', href: '/admin/settings', icon: <SettingsIcon /> },
 ];
 
-const AdminLayout = ({ children }) => {
+function AdminLayout({ children }) {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -80,6 +80,6 @@ const AdminLayout = ({ children }) => {
       </div>
     </div>
   );
-};
+}
 
 export default AdminLayout;
