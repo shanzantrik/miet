@@ -49,7 +49,7 @@ export default function ConsultantsPage() {
 
   const handleApprovalChange = async (consultantId, approved) => {
     try {
-      const response = await fetch(`${API_URL}/api/admin/consultants/${consultantId}/approve`, {
+      const response = await fetch(`${API_URL}/api/consultants/${consultantId}/approve`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ export default function ConsultantsPage() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-semibold text-gray-900">Consultants</h1>
           <button
-            onClick={() => router.push('/admin/consultants/add')}
+            onClick={() => router.push('/api/consultants/add')}
             className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
           >
             Add New Consultant
@@ -232,13 +232,13 @@ export default function ConsultantsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button
-                        onClick={() => router.push(`/admin/consultants/${consultant.id}`)}
+                        onClick={() => router.push(`/api/consultants/${consultant.id}`)}
                         className="text-indigo-600 hover:text-indigo-900 mr-4"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={() => router.push(`/admin/consultants/${consultant.id}/view`)}
+                        onClick={() => router.push(`/api/consultants/${consultant.id}/view`)}
                         className="text-gray-600 hover:text-gray-900"
                       >
                         View
