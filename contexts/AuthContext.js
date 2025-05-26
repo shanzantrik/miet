@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { endpoints, getAuthHeaders } from '../utils/api';
 
 const AuthContext = createContext();
 
@@ -23,17 +24,41 @@ export function AuthProvider({ children }) {
   const checkAuth = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (token) {
-        // Set the token in axios defaults
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-        const response = await axios.get('/api/auth/me');
-        setUser(response.data);
+      if (!token) {
+        setUser(null);
+        setLoading(false);
+        return;
       }
-    } catch (err) {
-      localStorage.removeItem('token');
-      delete axios.defaults.headers.common['Authorization'];
-      setUser(null);
+
+      // Try admin endpoint first
+      try {
+        const adminResponse = await axios.get(endpoints.auth.adminMe, {
+          headers: getAuthHeaders()
+        });
+        if (adminResponse.data) {
+          setUser({ ...adminResponse.data, isAdmin: true });
+          setLoading(false);
+          return;
+        }
+      } catch (adminError) {
+        console.log('Not an admin user, trying regular user endpoint');
+      }
+
+      // Try regular user endpoint
+      const userResponse = await axios.get(endpoints.auth.me, {
+        headers: getAuthHeaders()
+      });
+      if (userResponse.data) {
+        setUser({ ...userResponse.data, isAdmin: false });
+      } else {
+        throw new Error('No user data received');
+      }
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      if (error.response?.status === 401 || error.response?.status === 404) {
+        localStorage.removeItem('token');
+        setUser(null);
+      }
     } finally {
       setLoading(false);
     }
@@ -41,7 +66,7 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password, isAdmin = false) => {
     try {
-      const endpoint = isAdmin ? '/api/admin/login' : '/api/auth/login';
+      const endpoint = isAdmin ? endpoints.auth.adminLogin : endpoints.auth.login;
       const response = await axios.post(endpoint, {
         email,
         password,
@@ -49,10 +74,9 @@ export function AuthProvider({ children }) {
 
       const { token, user } = response.data;
       localStorage.setItem('token', token);
-      // Set the token in axios defaults
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      setUser(user);
+      setUser({ ...user, isAdmin });
       setError(null);
       return true;
     } catch (err) {
@@ -63,7 +87,7 @@ export function AuthProvider({ children }) {
 
   const register = async (name, email, password) => {
     try {
-      const response = await axios.post('/api/auth/register', {
+      const response = await axios.post(endpoints.auth.register, {
         name,
         email,
         password,
@@ -71,10 +95,9 @@ export function AuthProvider({ children }) {
 
       const { token, user } = response.data;
       localStorage.setItem('token', token);
-      // Set the token in axios defaults
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
-      setUser(user);
+      setUser({ ...user, isAdmin: false });
       setError(null);
       return true;
     } catch (err) {
@@ -96,6 +119,7 @@ export function AuthProvider({ children }) {
     login,
     register,
     logout,
+    checkAuth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

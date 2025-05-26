@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Notification from '../../components/common/Notification';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+// Force local development URL
+const API_URL = 'http://localhost:5001';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -14,28 +15,37 @@ export default function AdminLogin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setNotification({ show: false, message: '', type: '' });
 
     try {
+      console.log('Attempting to connect to:', `${API_URL}/api/admin/login`);
+
       const response = await fetch(`${API_URL}/api/admin/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
       }
 
+      const data = await response.json();
+
+      // Store the token
       localStorage.setItem('token', data.token);
+
+      // Redirect to dashboard
       router.push('/admin/dashboard');
     } catch (error) {
+      console.error('Login error:', error);
       setNotification({
         show: true,
-        message: error.message || 'Login failed. Please try again.',
+        message: error.message || 'Failed to connect to the server. Please make sure the backend is running on localhost:5001',
         type: 'error'
       });
     } finally {

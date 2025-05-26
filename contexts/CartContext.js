@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { endpoints, getAuthHeaders } from '../utils/api';
 
 const CartContext = createContext();
 
@@ -10,35 +11,54 @@ export function CartProvider({ children }) {
 
   const fetchCart = async () => {
     try {
-      setLoading(true);
-      const response = await axios.get('/api/cart');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setCart(null);
+        setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(endpoints.cart.get, {
+        headers: getAuthHeaders()
+      });
+
       setCart(response.data);
       setError(null);
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch cart');
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      if (error.response?.status === 401) {
+        setCart(null);
+      }
+      setError(error.response?.data?.message || 'Failed to fetch cart');
     } finally {
       setLoading(false);
     }
   };
 
-  const addToCart = async (productId, quantity = 1) => {
+  const addToCart = async (serviceId, quantity = 1) => {
     try {
-      const response = await axios.post('/api/cart/items', {
-        productId,
-        quantity,
-      });
+      const response = await axios.post(
+        endpoints.cart.add,
+        { serviceId, quantity },
+        {
+          headers: getAuthHeaders()
+        }
+      );
       setCart(response.data);
       return true;
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to add item to cart');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      setError(error.response?.data?.message || 'Failed to add item to cart');
       return false;
     }
   };
 
   const updateQuantity = async (itemId, quantity) => {
     try {
-      const response = await axios.patch(`/api/cart/items/${itemId}`, {
+      const response = await axios.patch(`${endpoints.cart.get}/items/${itemId}`, {
         quantity,
+      }, {
+        headers: getAuthHeaders()
       });
       setCart(response.data);
       return true;
@@ -50,7 +70,9 @@ export function CartProvider({ children }) {
 
   const removeItem = async (itemId) => {
     try {
-      const response = await axios.delete(`/api/cart/items/${itemId}`);
+      const response = await axios.delete(`${endpoints.cart.get}/items/${itemId}`, {
+        headers: getAuthHeaders()
+      });
       setCart(response.data);
       return true;
     } catch (err) {
@@ -61,12 +83,29 @@ export function CartProvider({ children }) {
 
   const clearCart = async () => {
     try {
-      await axios.delete('/api/cart');
+      await axios.delete(endpoints.cart.clear, {
+        headers: getAuthHeaders()
+      });
       setCart(null);
       return true;
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to clear cart');
       return false;
+    }
+  };
+
+  const removeFromCart = async (serviceId) => {
+    try {
+      const response = await axios.delete(
+        endpoints.cart.remove(serviceId),
+        {
+          headers: getAuthHeaders()
+        }
+      );
+      setCart(response.data);
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      setError(error.response?.data?.message || 'Failed to remove item from cart');
     }
   };
 
@@ -83,6 +122,7 @@ export function CartProvider({ children }) {
     updateQuantity,
     removeItem,
     clearCart,
+    removeFromCart,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

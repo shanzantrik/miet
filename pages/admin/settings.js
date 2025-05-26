@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { useAuth } from '../../contexts/AuthContext';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+
 export default function Settings() {
   const router = useRouter();
   const { user, loading, checkAuth } = useAuth();
@@ -21,15 +23,20 @@ export default function Settings() {
 
   useEffect(() => {
     const init = async () => {
-      await checkAuth();
-      if (!user) {
+      try {
+        await checkAuth();
+        if (!user) {
+          router.replace('/admin/login');
+        } else {
+          fetchSettings();
+        }
+      } catch (error) {
+        console.error('Auth check failed:', error);
         router.replace('/admin/login');
-      } else {
-        fetchSettings();
       }
     };
     init();
-  }, [user]);
+  }, [user, checkAuth, router]);
 
   const fetchSettings = async () => {
     try {
@@ -38,7 +45,7 @@ export default function Settings() {
         throw new Error('No authentication token found');
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/settings`, {
+      const response = await fetch(`${API_URL}/api/admin/settings`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Accept': 'application/json'
@@ -79,7 +86,7 @@ export default function Settings() {
         return;
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/admin/settings`, {
+      const response = await fetch(`${API_URL}/api/admin/settings`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -141,8 +148,7 @@ export default function Settings() {
         <h1 className="text-2xl font-semibold text-gray-900 mb-6">Settings</h1>
 
         {notification.show && (
-          <div className={`mb-4 p-4 rounded-md ${notification.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'
-            }`}>
+          <div className={`mb-4 p-4 rounded-md ${notification.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
             {notification.message}
           </div>
         )}
@@ -202,9 +208,9 @@ export default function Settings() {
                 onChange={handleChange}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               >
-                <option value="INR">INR</option>
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
+                <option value="INR">INR (₹)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
               </select>
             </div>
 
@@ -220,7 +226,7 @@ export default function Settings() {
                 onChange={handleChange}
                 min="0"
                 max="100"
-                step="0.01"
+                step="0.1"
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
               />
             </div>
